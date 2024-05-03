@@ -53,6 +53,28 @@ blogRouter.post("/",async(req,res)=>{
         }
     })
 
+    blogRouter.patch("/edit/:id",async(req,res)=>{
+        let payload=req.body
+        let ID=req.params.id
+        let data =await BlogsModel.findOne({_id:ID})
+        let userID_post=data.userID
+        let userID_req=req.body.userID
+        try {
+            
+                 if((userID_post==userID_req)){
+                    await BlogsModel.findByIdAndUpdate({
+                     _id:ID
+                },payload)
+                res.status(200).send(`blog with ${ID} is updated successfully`)
+            }else{ 
+                res.status(404).send("Not authorized")
+            }
+            
+        } catch (error) {
+            res.status(500).send(error)
+        }
+    })
+
 
 module.exports={
     blogRouter
